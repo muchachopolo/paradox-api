@@ -202,6 +202,6 @@ function play(scenario) {
         phantom.exit();
       }
     }
-  }, 50);
+  }, 150);
 }
 
