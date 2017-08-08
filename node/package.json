@@ -1,0 +1,17 @@
+{
+  "name": "paradox-api",
+  "version": "1.0.0",
+  "description": "API for the Paradox IP 150",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": "http://nowhere.for/the/moment",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3",
+    "phantomjs": "^2.1.7"
+  }
+}
