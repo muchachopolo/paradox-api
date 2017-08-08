@@ -12,7 +12,7 @@ WORKDIR $wd
 COPY ["node/*", "./"]
 RUN npm install
 
-EXPOSE [3000]
+EXPOSE 3000
 
 ENTRYPOINT ["./start.sh"]
 COPY ["docker/start.sh", "start.sh"]
