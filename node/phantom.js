@@ -4,15 +4,20 @@ var loadInProgress = false;
 var playing = false;
 
 var system = require('system');
-var config = require("./config");
+var userConfig = require("./config");
 var args = system.args;
 
-config.verbose = false;
-config.scenario = null;
-config.bindingOutAreaStates =  { "0": "disabled",  "2": "armed",              "5": "partial",       "10": "immediate", "8": "ready" };
-config.bindingOutZoneStatess = { "0": "disabled"};
-config.bindingInStates =       {                   "regular": "r", "forced" : "f", "partial": "s",  "immediate": "i",  "ready": "d" };
-config.bindingInAreas =        { "1": "00",  "2": "01"};
+var config = {
+  login: userConfig.ipModule.login,
+  password: userConfig.ipModule.password,
+  url: userConfig.ipModule.url,
+  verbose: false,
+  scenario: null,
+  bindingOutAreaStates:  { "0": "disabled",  "2": "armed",              "5": "partial",       "10": "immediate", "8": "ready" },
+  bindingOutZoneStatess: { "0": "disabled"},
+  bindingInStates:       {                   "regular": "r", "forced" : "f", "partial": "s",  "immediate": "i",  "ready": "d" },
+  bindingInAreas:        { "1": "00",  "2": "01"}
+};
 
 for (var i = 1; i < args.length; i++) {
   var prevArg = (i > 1) ? args[i-1] : null;

@@ -1,14 +1,44 @@
 var express = require('express');
 var execSync = require('child_process').execSync;
-var app = require('express')()
- 
+ var app = require('express')()
+//var auth = require('express-basic-auth');
+var basicAuth = require('express-basic-auth');
+
+var userConfig = require("./config");
+
 var config = {
   bindingRequestedTarget : {"regular": "armed", "forced": "armed", "partial": "partial", "immediate": "immediate", "ready": "ready"},
-  phantom: "phantomjs",
+  phantom: "phantomjs --ignore-ssl-errors=true",
   script: "phantom.js",
-  readCount: 3,
+  readCount: 2,
   writeCount: 5,
+  users : userConfig.api.users,
+//  ip150: {}
 };
+
+app.use(basicAuth({
+	// users: config.users,
+	authorizer: function (username, password) {
+		var a = (config.users[username] === password);
+		console.log("User " + username + (a ? " authenticated" : " : access denied !"));
+        /*
+        if (a) {
+          ip150 = {
+            user: username,
+            password: password
+          };
+        } else {
+          config.ip150 = {};
+        }
+        */
+		return a;
+	},
+    challenge: true,
+    realm: 'Paradox API',
+    unauthorizedResponse: function (req) {
+	    return req.auth ? 'Credentials rejected' : 'No credentials provided';
+	}
+}));
 
 app.get('/area/:area/:state', function (req, res) {
 	json(res);

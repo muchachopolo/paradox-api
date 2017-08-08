@@ -7,11 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "repository": "http://nowhere.for/the/moment",
-  "author": "",
+  "repository": "https://github.com/calfater/paradox-api",
+  "author": "Calfater",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.3",
+    "express-basic-auth": "^1.1.1",
     "phantomjs": "^2.1.7"
   }
 }
