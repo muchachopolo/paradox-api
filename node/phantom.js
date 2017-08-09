@@ -13,11 +13,27 @@ var config = {
   url: userConfig.ipModule.url,
   verbose: false,
   scenario: null,
-  bindingOutAreaStates:  { "0": "disabled",  "2": "armed",              "5": "partial",       "10": "immediate", "8": "ready" },
+  bindingOutAreaStates:  {
+    "0": "disabled",
+    "2": "armed",
+    "5": "partial",
+    "10": "immediate",
+    "8": "ready"
+  },
   bindingOutZoneStatess: { "0": "disabled"},
-  bindingInStates:       {                   "regular": "r", "forced" : "f", "partial": "s",  "immediate": "i",  "ready": "d" },
-  bindingInAreas:        { "1": "00",  "2": "01"}
+  bindingInStates:       {
+    "regular": "r",
+    "forced" : "f",
+    "partial": "s",
+    "immediate": "i",
+    "ready": "d" 
+  },
+  bindingInAreas: {}
 };
+
+for (var i = 0; i < 8; i++) {
+  config.bindingInAreas[""+(i+1)] = "0" + i;
+}
 
 for (var i = 1; i < args.length; i++) {
   var prevArg = (i > 1) ? args[i-1] : null;
@@ -34,6 +50,16 @@ for (var i = 1; i < args.length; i++) {
   if ("-s" == prevArg || "--state" == prevArg) {
     config.state = config.bindingInStates[arg];
   }
+  if ("-u" == prevArg || "--user" == prevArg) {
+    config.login = arg;
+  }
+  if ("-p" == prevArg || "--pass" == prevArg) {
+    config.password = arg;
+  }
+}
+
+if (config.verbose) {
+  console.log(JSON.stringify(config));
 }
 
 page.onError = function(msg, trace) {
@@ -86,16 +112,9 @@ var steps = {
     name: "Login",
     action: function(config) {
       page.evaluate(function(config) {
-        var r = {};
-
-        pass = hex_md5(top.keeplowbyte(config.password)) + document.lf.ses.value;
-        r.u = rc4(pass, config.login);
-        r.p = hex_md5(pass);
-
         document.getElementById("user").value=config.login;
         document.getElementById("pass").value=config.password;
         document.getElementsByName("loginsub")[0].click();
-        return r;
       }, config)
     }
   },
@@ -136,7 +155,7 @@ var steps = {
     action: function(config) {
       return page.evaluate(function(config) {
         var ret = {
-          areas: {},
+          areas: [],
           zones: {}
         };
 
@@ -144,9 +163,9 @@ var steps = {
           var friendlyNameId = tbl_useraccess[i];
           var friendlyName = config.bindingOutAreaStates[friendlyNameId];
           if (undefined != friendlyName) {
-            ret.areas["area_"+(i+1)] = friendlyName;
+            ret.areas.push({id: i+1, state: friendlyName});
           } else {
-            ret.areas["area_"+(i+1)] = friendlyNameId;
+            ret.areas.push({id: i+1, state: friendlyNameId});
           }
         }
         /*
@@ -170,8 +189,6 @@ var steps = {
 
 if ("status" == config.scenario) {
   play([steps.openLogin, steps.login, steps.openWaitLive, steps.openStatus, steps.html, steps.grepStatus, steps.openLogout]);
-} else if ("test" == config.scenario) {
-  play([steps.openLogin, steps.login, steps.frames, steps.html, steps.openLogout]);
 } else if ("set" == config.scenario) {
   if (undefined == config.area) {
     console.log("Specify an area (-a | --area) (" + Object.keys(config.bindingInAreas).join(" | ") + ")");
@@ -183,7 +200,7 @@ if ("status" == config.scenario) {
   }
   play([steps.openLogin, steps.login, steps.openWaitLive, steps.openStatus, steps.openSetStatus, steps.openLogout]);
 } else {
-  console.log("Specify an action (status | set)");
+  console.log("Specify an action (status | set) [-u | --user user] [-p | --pass password]");
   phantom.exit();
 }
 
