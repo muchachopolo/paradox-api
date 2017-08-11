@@ -133,7 +133,7 @@ function getHelp() {
             + "[GET] - /area/:area\n"
             + "  get area state\n\n"
             + "[GET] - /area/:area/:state\n"
-            + "  set area state\n\n"
+            + "  set area state ("+ Object.keys(config.bindingRequestedTarget).join(" | ") +")\n\n"
 }
 
 function log(message) {
