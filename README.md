@@ -8,23 +8,7 @@ A web server is exposed an you can use REST operation to manage our Alarm.
 
 ## Configuration
 
-Edit (or create) the file `config.js`:
-
-```javascript
-module.exports = {
-  ipModule: {
-    url: "https://ip150:443", // The url of the ip150 module (like in your browser)
-    login: "1234",
-    password: "secret"
-  },
-  api: {
-    forwardCredentials: false,
-    users: {
-      "paradox": "api" // login: password pair for using the API
-    }
-  }
-};
-```
+Edit the file `config.js`:
 
  - set `ipModule.url` to your ip150 url.
  - fill `ipModule.url.login` and `ipModule.url.password` to match your ip150 user/password
@@ -45,21 +29,27 @@ Note: `ipModule.url.login`, `ipModule.url.password` and `api.users` are no longe
 
 ### Command line
 
-`sudo docker run -v /path/to/paradox-api/config.js:/home/paradox-api/config.js:ro -p 3000:3000 --name paradox-api -d calfater/paradox-api`
+    sudo docker run -d \
+    -v /local/data:/data \
+    -p 3000:3000 \
+    -e UID=1001 \
+    -e GID=1002 \
+    --name paradox-api \
+    calfater/paradox-api
 
 ### With crane (the royal recommended way)
-
 
 ```crane
   paradox-api:  
     image: calfater/paradox-api:latest  
     detach: true  
+    env:
+      - UID=1000
+      - GID=1000
     ports:  
       - "3000:3000"
     volumes:
-      - paradox-api/config.js:/home/paradox-api/config.js:ro
-    depends_on: 
-      - proxy-nginx
+      - paradox-api/data:/data
 ```
 
 ## Without Docker 
@@ -84,3 +74,7 @@ Go to _http://paradox-api:3000/area_ to get state of all your areas.
 `sudo docker exec paradox-api bash`
 
 
+## Building
+
+### Docker
+    docker build --build-arg U=paradoxapi -t calfater/paradox-api:latest .

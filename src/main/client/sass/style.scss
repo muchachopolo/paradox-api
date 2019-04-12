@@ -1,0 +1,46 @@
+$unknown: beige;
+$disabled: gray;
+$forced: darkred;
+$armed: darkred;
+$immediate: red;
+$partial: orange;
+$ready: green;
+
+.status- {
+  &unknown {
+    background-color: $unknown;
+  }
+  &disabled {
+    background-color: $disabled;
+  }
+  &armed {
+    background-color: $armed;
+  }
+  &immediate {
+    background-color: $immediate;
+  }
+  &partial {
+    background-color: $partial;
+  }
+  &ready {
+    background-color: $ready;
+  }
+}
+
+.arming- {
+  &regular {
+    background-color: $armed;
+  }
+  &forced {
+    background-color: $forced;
+  }
+  &immediate {
+    background-color: $immediate;
+  }
+  &partial {
+    background-color: $partial;
+  }
+  &ready {
+    background-color: $ready;
+  }
+}
